@@ -8,8 +8,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.util.concurrent.TimeUnit;
 
-public class AddToCart {
-
+public class RemoveFromCart {
     private WebDriver driver;
 
 
@@ -33,11 +32,8 @@ public class AddToCart {
 
     @Test
     public void firefoxTest() {
-        /*      firefoxOptions.addArguments("--headless");
-        firefoxOptions.addArguments("--no-sandbox");*/
-        driver.get("http://rustykalnydev.pl/index.php?id_product=3044&rewrite=lampa-orientalna-maha-niebieska&controller=product");
-        driver.findElement(By.className("add-to-cart")).click();
-        driver.findElement(By.cssSelector("a.btn-primary")).click();
-        driver.findElement(By.linkText("Lampa orientalna MAHA niebieska"));
+        driver.get("http://rustykalnydev.pl/index.php");
+        driver.findElement(By.linkText("Koszyk(1)")).click();
+        driver.findElement(By.className("no-items"));
     }
 }
