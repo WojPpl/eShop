@@ -8,10 +8,11 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.util.concurrent.TimeUnit;
 
-public class Search {
+import static org.junit.Assert.*;
+
+public class SortingList {
 
     private WebDriver driver;
-
 
     @BeforeClass
     public static void setupClass() {
@@ -32,13 +33,12 @@ public class Search {
     }
 
     @Test
-    public void firefoxTest() {
-        driver.get("http://rustykalnydev.pl/index.php");
-        driver.findElement(By.name("s")).click();
-        driver.findElement(By.name("s")).clear();
-        driver.findElement(By.name("s")).sendKeys("lampa");
-        driver.findElement(By.xpath("//div[@id='search_widget']/form/button/i")).click();
-        driver.findElement(By.linkText("Marokańska lampa / gwiazda...")).click();
-        driver.findElement(By.xpath("(//button[@type='submit'])[2]")).click();
+    public void firefoxTest() throws InterruptedException {
+        driver.get("http://rustykalnydev.pl/index.php?id_category=266&controller=category");
+        driver.findElement(By.xpath("//div[@id='js-product-list-top']/div[2]/div/div/button")).click();
+        driver.findElement(By.linkText("Cena, malejąco")).click();
+        Thread.sleep(2000);
+        String price = driver.findElement(By.xpath("//div[@id='js-product-list']/div/article/div/div/div/span[2]")).getText();
+        assertTrue(price.equals("187,20 zł"));
     }
 }
