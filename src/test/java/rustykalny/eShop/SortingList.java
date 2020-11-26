@@ -1,5 +1,9 @@
 package rustykalny.eShop;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+
 import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,6 +16,10 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 
 public class SortingList {
+
+
+    ExtentReports extent = new ExtentReports();
+    ExtentSparkReporter spark = new ExtentSparkReporter("testReports/Sort.html");
 
     private WebDriver driver, driverChrome;
 
@@ -27,6 +35,7 @@ public class SortingList {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driverChrome = new ChromeDriver();
         driverChrome.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        extent.attachReporter(spark);
     }
 
 
@@ -36,16 +45,31 @@ public class SortingList {
             driver.quit();
             driverChrome.quit();
         }
+        extent.flush();
     }
 
     @Test
-    public void firefoxTest() throws InterruptedException {
-        testContent(driver);
+    public void firefoxTest() {
+        try {
+            testContent(driver);
+            extent.createTest("Search products - Firefox browser")
+                    .log(Status.PASS, "click sort select -> choose from cheapest -> get and check price -> Test passed!");
+        } catch (Exception e) {
+            extent.createTest("Search products - Firefox browser")
+                    .log(Status.FAIL, e.getMessage());
+        }
     }
 
     @Test
-    public void chromeTest() throws InterruptedException {
-        testContent(driverChrome);
+    public void chromeTest() {
+        try {
+            testContent(driverChrome);
+            extent.createTest("Search products - Chrome browser")
+                    .log(Status.PASS, "click sort select -> choose from cheapest -> get and check price -> Test passed!");
+        } catch (Exception e) {
+            extent.createTest("Search products - Chrome browser")
+                    .log(Status.FAIL, e.getMessage());
+        }
     }
 
     public void testContent(WebDriver webdriver) throws InterruptedException {

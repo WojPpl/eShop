@@ -1,18 +1,24 @@
 package rustykalny.eShop;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+
 import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.opera.OperaDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.util.concurrent.TimeUnit;
 
 public class Search {
 
-    private WebDriver driver, driverChrome, driverOpera;
+    ExtentReports extent = new ExtentReports();
+    ExtentSparkReporter spark = new ExtentSparkReporter("testReports/Search.html");
+
+    private WebDriver driver, driverChrome;
 
 
     @BeforeClass
@@ -26,6 +32,7 @@ public class Search {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driverChrome = new ChromeDriver();
         driverChrome.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        extent.attachReporter(spark);
     }
 
     @After
@@ -34,16 +41,31 @@ public class Search {
             driver.quit();
             driverChrome.quit();
         }
+        extent.flush();
     }
 
     @Test
     public void firefoxTest() {
-        testContent(driver);
+        try {
+            testContent(driver);
+            extent.createTest("Search products - Firefox browser")
+                    .log(Status.PASS, "click search input -> clear search input -> enter phrase -> click search button -> find product containing phrase -> Test passed!");
+        } catch (Exception e) {
+            extent.createTest("Search products - Firefox browser")
+                    .log(Status.FAIL, e.getMessage());
+        }
     }
 
     @Test
     public void chromeTest() {
-        testContent(driverChrome);
+        try {
+            testContent(driverChrome);
+            extent.createTest("Search products - Chrome browser")
+                    .log(Status.PASS, "click search input -> clear search input -> enter phrase -> click search button -> find product containing phrase -> Test passed!");
+        } catch (Exception e) {
+            extent.createTest("Search products - Chrome browser")
+                    .log(Status.FAIL, e.getMessage());
+        }
     }
 
     public void testContent(WebDriver webdriver) {
