@@ -3,15 +3,15 @@ package rustykalny.eShop;
 import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-public class SortingList {
+public class SearchCheapestLampBundle {
 
     private WebDriver driver, driverChrome;
 
@@ -21,6 +21,7 @@ public class SortingList {
         WebDriverManager.chromedriver().setup();
     }
 
+
     @Before
     public void setupTest() {
         driver = new FirefoxDriver();
@@ -28,7 +29,6 @@ public class SortingList {
         driverChrome = new ChromeDriver();
         driverChrome.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
     }
-
 
     @After
     public void teardown() {
@@ -49,11 +49,16 @@ public class SortingList {
     }
 
     public void testContent(WebDriver webdriver) throws InterruptedException {
-        webdriver.get("http://rustykalnydev.pl/index.php?id_category=266&controller=category");
+        webdriver.get("http://rustykalnydev.pl/index.php");
+        webdriver.findElement(By.name("s")).click();
+        webdriver.findElement(By.name("s")).clear();
+        webdriver.findElement(By.name("s")).sendKeys("lampa");
+        webdriver.findElement(By.xpath("//div[@id='search_widget']/form/button/i")).click();
         webdriver.findElement(By.xpath("//div[@id='js-product-list-top']/div[2]/div/div/button")).click();
-        webdriver.findElement(By.linkText("Cena, malejąco")).click();
+        webdriver.findElement(By.linkText("Cena, rosnąco")).click();
         Thread.sleep(2000);
         String price = webdriver.findElement(By.xpath("//div[@id='js-product-list']/div/article/div/div/div/span[2]")).getText();
-        assertTrue(price.equals("187,20 zł"));
+        assertTrue(price.equals("119,00 zł"));
     }
+
 }

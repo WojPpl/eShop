@@ -3,15 +3,13 @@ package rustykalny.eShop;
 import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
-
-public class SortingList {
+public class AddAndRemoveProductBundle {
 
     private WebDriver driver, driverChrome;
 
@@ -29,7 +27,6 @@ public class SortingList {
         driverChrome.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
     }
 
-
     @After
     public void teardown() {
         if (driver != null && driverChrome != null) {
@@ -39,21 +36,19 @@ public class SortingList {
     }
 
     @Test
-    public void firefoxTest() throws InterruptedException {
+    public void firefoxTest() {
         testContent(driver);
     }
 
     @Test
-    public void chromeTest() throws InterruptedException {
+    public void chromeTest() {
         testContent(driverChrome);
     }
 
-    public void testContent(WebDriver webdriver) throws InterruptedException {
-        webdriver.get("http://rustykalnydev.pl/index.php?id_category=266&controller=category");
-        webdriver.findElement(By.xpath("//div[@id='js-product-list-top']/div[2]/div/div/button")).click();
-        webdriver.findElement(By.linkText("Cena, malejąco")).click();
-        Thread.sleep(2000);
-        String price = webdriver.findElement(By.xpath("//div[@id='js-product-list']/div/article/div/div/div/span[2]")).getText();
-        assertTrue(price.equals("187,20 zł"));
+    public void testContent(WebDriver webdriver) {
+        webdriver.get("http://rustykalnydev.pl/index.php?id_product=3044&rewrite=lampa-orientalna-maha-niebieska&controller=product");
+        webdriver.findElement(By.className("add-to-cart")).click();
+        webdriver.findElement(By.cssSelector("a.btn-primary")).click();
+        webdriver.findElement(By.linkText("Lampa orientalna MAHA niebieska"));
     }
 }
