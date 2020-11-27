@@ -1,7 +1,7 @@
 package rustykalny.eShop;
 
-import java.util.concurrent.TimeUnit;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import java.util.concurrent.TimeUnit;
 import org.junit.*;
 import static org.junit.Assert.*;
 import org.openqa.selenium.*;
