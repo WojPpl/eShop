@@ -1,71 +1,79 @@
 package rustykalny.eShop;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import io.github.bonigarcia.wdm.WebDriverManager;
+
 import java.util.concurrent.TimeUnit;
+
 import org.junit.*;
+
 import static org.junit.Assert.*;
+
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class Logout {
-    private WebDriver driver;
+    ExtentReports extent = new ExtentReports();
+    ExtentSparkReporter spark = new ExtentSparkReporter("testReports/" + this.getClass().getSimpleName() + ".html");
+
+    private WebDriver driver, driverChrome;
     private String baseUrl;
-    private boolean acceptNextAlert = true;
-    private StringBuffer verificationErrors = new StringBuffer();
+
+    @BeforeClass
+    public static void setupClass() {
+        WebDriverManager.firefoxdriver().setup();
+        WebDriverManager.chromedriver().setup();
+    }
 
     @Before
     public void setUp() throws Exception {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        baseUrl = "https://www.google.com/";
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-    }
-
-    @Test
-    public void testLogout() throws Exception {
-        driver.get("http://rustykalnydev.pl/index.php?controller=identity");
-        driver.findElement(By.cssSelector("path.icofill.icostr2")).click();
+        driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        driverChrome = new ChromeDriver();
+        driverChrome.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        extent.attachReporter(spark);
+        // baseUrl = "https://www.google.com/";
     }
 
     @After
     public void tearDown() throws Exception {
-        driver.quit();
-        String verificationErrorString = verificationErrors.toString();
-        if (!"".equals(verificationErrorString)) {
-            fail(verificationErrorString);
+        if (driver != null && driverChrome != null) {
+            driver.quit();
+            driverChrome.quit();
+        }
+        extent.flush();
+    }
+
+    @Test
+    public void firefoxTest() {
+        try {
+            testContent(driver);
+            extent.createTest("Change price - Firefox browser")
+                    .log(Status.PASS, "text......");
+        } catch (Exception e) {
+            extent.createTest("Change price - Firefox browser")
+                    .log(Status.FAIL, e.getMessage());
         }
     }
 
-    private boolean isElementPresent(By by) {
+    @Test
+    public void chromeTest() {
         try {
-            driver.findElement(by);
-            return true;
-        } catch (NoSuchElementException e) {
-            return false;
+            testContent(driverChrome);
+            extent.createTest("Add to cart - Chrome browser")
+                    .log(Status.PASS, "text......");
+        } catch (Exception e) {
+            extent.createTest("Add to cart - Chrome browser")
+                    .log(Status.FAIL, e.getMessage());
         }
     }
 
-    private boolean isAlertPresent() {
-        try {
-            driver.switchTo().alert();
-            return true;
-        } catch (NoAlertPresentException e) {
-            return false;
-        }
+    public void testContent(WebDriver driver) {
+        driver.get("http://rustykalnydev.pl/index.php?controller=identity");
+        driver.findElement(By.cssSelector("path.icofill.icostr2")).click();
     }
 
-    private String closeAlertAndGetItsText() {
-        try {
-            Alert alert = driver.switchTo().alert();
-            String alertText = alert.getText();
-            if (acceptNextAlert) {
-                alert.accept();
-            } else {
-                alert.dismiss();
-            }
-            return alertText;
-        } finally {
-            acceptNextAlert = true;
-        }
-    }
 }
