@@ -5,6 +5,7 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.*;
@@ -14,10 +15,11 @@ import static org.junit.Assert.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.opera.OperaDriver;
 
 
 public class ChangePrice {
-    private WebDriver driver, driverChrome;
+    private WebDriver driver, driverChrome, driverOpera;
     private String className = this.getClass().getSimpleName();
     private String testDesciption = "test text";
 
@@ -26,32 +28,36 @@ public class ChangePrice {
 
 
     @BeforeClass
-    public static void setupClass() {
+    public static void setupClass() throws IOException {
         WebDriverManager.firefoxdriver().setup();
         WebDriverManager.chromedriver().setup();
+        WebDriverManager.operadriver().setup();
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws IOException {
         driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driverChrome = new ChromeDriver();
         driverChrome.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        driverOpera = new OperaDriver();
+        driverOpera.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         extent.attachReporter(spark);
 
     }
 
     @After
-    public void tearDown() throws Exception {
-        if (driver != null && driverChrome != null) {
+    public void tearDown() throws IOException {
+        if (driver != null && driverChrome != null && driverOpera != null) {
             driver.quit();
             driverChrome.quit();
+            driverOpera.quit();
         }
         extent.flush();
     }
 
     @Test
-    public void firefoxTest() {
+    public void firefoxTest() throws IOException {
         try {
             testContent(driver);
             extent.createTest(splitCamelCase(className) + " - Firefox browser")
@@ -63,13 +69,25 @@ public class ChangePrice {
     }
 
     @Test
-    public void chromeTest() {
+    public void chromeTest() throws IOException {
         try {
             testContent(driverChrome);
             extent.createTest(splitCamelCase(className) + " - Chrome browser")
                     .log(Status.PASS, testDesciption);
         } catch (Exception e) {
             extent.createTest(splitCamelCase(className) + " - Chrome browser")
+                    .log(Status.FAIL, e.getMessage());
+        }
+    }
+
+    @Test
+    public void operaTest() throws IOException {
+        try {
+            testContent(driverOpera);
+            extent.createTest(splitCamelCase(className) + " - Opera browser")
+                    .log(Status.PASS, testDesciption);
+        } catch (Exception e) {
+            extent.createTest(splitCamelCase(className) + " - Opera browser")
                     .log(Status.FAIL, e.getMessage());
         }
     }

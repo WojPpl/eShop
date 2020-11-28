@@ -14,10 +14,11 @@ import static org.junit.Assert.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.opera.OperaDriver;
 
 
 public class Searching {
-    private WebDriver driver, driverChrome;
+    private WebDriver driver, driverChrome, driverOpera;
     private String className = this.getClass().getSimpleName();
     private String testDesciption = "test text";
 
@@ -29,6 +30,7 @@ public class Searching {
     public static void setupClass() {
         WebDriverManager.firefoxdriver().setup();
         WebDriverManager.chromedriver().setup();
+        WebDriverManager.operadriver().setup();
     }
 
     @Before
@@ -37,15 +39,18 @@ public class Searching {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driverChrome = new ChromeDriver();
         driverChrome.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        driverOpera = new OperaDriver();
+        driverOpera.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         extent.attachReporter(spark);
 
     }
 
     @After
     public void tearDown() throws Exception {
-        if (driver != null && driverChrome != null) {
+        if (driver != null && driverChrome != null && driverOpera != null)  {
             driver.quit();
             driverChrome.quit();
+            driverOpera.quit();
         }
         extent.flush();
     }
@@ -70,6 +75,18 @@ public class Searching {
                     .log(Status.PASS, testDesciption);
         } catch (Exception e) {
             extent.createTest(splitCamelCase(className) + " - Chrome browser")
+                    .log(Status.FAIL, e.getMessage());
+        }
+    }
+
+    @Test
+    public void operaTest() {
+        try {
+            testContent(driverOpera);
+            extent.createTest(splitCamelCase(className) + " - Opera browser")
+                    .log(Status.PASS, testDesciption);
+        } catch (Exception e) {
+            extent.createTest(splitCamelCase(className) + " - Opera browser")
                     .log(Status.FAIL, e.getMessage());
         }
     }
