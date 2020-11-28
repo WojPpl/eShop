@@ -1,3 +1,4 @@
-/.idea/
-/target/
-/allure-results/
+.idea/
+allure-results/
+target/
+./eShop.iml

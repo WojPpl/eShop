@@ -17,11 +17,14 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 
 public class Searching {
-    ExtentReports extent = new ExtentReports();
-    ExtentSparkReporter spark = new ExtentSparkReporter("testReports/" + this.getClass().getSimpleName() + ".html");
-
     private WebDriver driver, driverChrome;
-    private String baseUrl;
+    private String className = this.getClass().getSimpleName();
+    private String testDesciption = "test text";
+    //private String baseUrl;
+
+    ExtentReports extent = new ExtentReports();
+    ExtentSparkReporter spark = new ExtentSparkReporter("testReports/" + className + ".html");
+
 
     @BeforeClass
     public static void setupClass() {
@@ -37,6 +40,7 @@ public class Searching {
         driverChrome.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         extent.attachReporter(spark);
         // baseUrl = "https://www.google.com/";
+
     }
 
     @After
@@ -52,10 +56,10 @@ public class Searching {
     public void firefoxTest() {
         try {
             testContent(driver);
-            extent.createTest("Change price - Firefox browser")
-                    .log(Status.PASS, "text......");
+            extent.createTest(splitCamelCase(className) + " - Firefox browser")
+                    .log(Status.PASS, testDesciption);
         } catch (Exception e) {
-            extent.createTest("Change price - Firefox browser")
+            extent.createTest(splitCamelCase(className) + " - Firefox browser")
                     .log(Status.FAIL, e.getMessage());
         }
     }
@@ -64,12 +68,23 @@ public class Searching {
     public void chromeTest() {
         try {
             testContent(driverChrome);
-            extent.createTest("Add to cart - Chrome browser")
-                    .log(Status.PASS, "text......");
+            extent.createTest(splitCamelCase(className) + " - Chrome browser")
+                    .log(Status.PASS, testDesciption);
         } catch (Exception e) {
-            extent.createTest("Add to cart - Chrome browser")
+            extent.createTest(splitCamelCase(className) + " - Chrome browser")
                     .log(Status.FAIL, e.getMessage());
         }
+    }
+
+    static String splitCamelCase(String s) {
+        return s.replaceAll(
+                String.format("%s|%s|%s",
+                        "(?<=[A-Z])(?=[A-Z][a-z])",
+                        "(?<=[^A-Z])(?=[A-Z])",
+                        "(?<=[A-Za-z])(?=[^A-Za-z])"
+                ),
+                " "
+        );
     }
 
     public void testContent(WebDriver driver) {
