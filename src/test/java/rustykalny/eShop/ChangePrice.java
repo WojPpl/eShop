@@ -20,7 +20,6 @@ public class ChangePrice {
     private WebDriver driver, driverChrome;
     private String className = this.getClass().getSimpleName();
     private String testDesciption = "test text";
-    //private String baseUrl;
 
     ExtentReports extent = new ExtentReports();
     ExtentSparkReporter spark = new ExtentSparkReporter("testReports/" + className + ".html");
@@ -39,7 +38,6 @@ public class ChangePrice {
         driverChrome = new ChromeDriver();
         driverChrome.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         extent.attachReporter(spark);
-        // baseUrl = "https://www.google.com/";
 
     }
 
@@ -75,7 +73,7 @@ public class ChangePrice {
                     .log(Status.FAIL, e.getMessage());
         }
     }
-    
+
     static String splitCamelCase(String s) {
         return s.replaceAll(
                 String.format("%s|%s|%s",

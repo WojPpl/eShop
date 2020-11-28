@@ -20,7 +20,6 @@ public class Searching {
     private WebDriver driver, driverChrome;
     private String className = this.getClass().getSimpleName();
     private String testDesciption = "test text";
-    //private String baseUrl;
 
     ExtentReports extent = new ExtentReports();
     ExtentSparkReporter spark = new ExtentSparkReporter("testReports/" + className + ".html");
@@ -39,7 +38,6 @@ public class Searching {
         driverChrome = new ChromeDriver();
         driverChrome.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         extent.attachReporter(spark);
-        // baseUrl = "https://www.google.com/";
 
     }
 
