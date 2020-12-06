@@ -16,11 +16,15 @@ import org.openqa.selenium.opera.OperaDriver;
 
 import java.util.concurrent.TimeUnit;
 
-public class Login {
+
+public class SearchingAndChangePriceBundle {
     private WebDriver driver, driverChrome, driverOpera;
     private String className = this.getClass().getSimpleName();
-    private String testDesciption = "Open product page -> click on login-> click on field email -> " +
-            "write email ->go to password -> write password -> click on submit -> click on information ->Test passed.";
+    private String testDesciption = "Open product page -> click on search field " +
+            "-> write searched product -> click on search button " +
+            "-> find product containing phrase -> get actual total price of product " +
+            "-> click 3 times on plus button - get total price product after changes " +
+            "-> check is it the same price-> Test passed!";
 
     ExtentReports extent = new ExtentReports();
     ExtentSparkReporter spark = new ExtentSparkReporter("testReports/" + className + ".html");
@@ -47,7 +51,7 @@ public class Login {
 
     @After
     public void tearDown() throws Exception {
-        if (driver != null && driverChrome != null && driverOpera != null) {
+        if (driver != null && driverChrome != null && driverOpera != null)  {
             driver.quit();
             driverChrome.quit();
             driverOpera.quit();
@@ -102,18 +106,20 @@ public class Login {
         );
     }
 
-    public void testContent(WebDriver driver) {
+    public void testContent(WebDriver driver) throws Exception{
         driver.get("http://rustykalnydev.pl/index.php");
-        driver.findElement(By.cssSelector("path.icofill.icostr2")).click();
-        driver.findElement(By.name("email")).click();
-        driver.findElement(By.name("email")).clear();
-        driver.findElement(By.name("email")).sendKeys("test@test.pl");
-        driver.findElement(By.name("password")).clear();
-        driver.findElement(By.name("password")).sendKeys("test1");
-        driver.findElement(By.id("submit-login")).click();
-        driver.findElement(By.xpath("//a[@id='identity-link']/span")).click();
-
+        driver.findElement(By.name("s")).click();
+        driver.findElement(By.name("s")).clear();
+        driver.findElement(By.name("s")).sendKeys("mauretańska lampa mo");
+        driver.findElement(By.xpath("//div[@id='search_widget']/form/button/i")).click();
+        driver.findElement(By.linkText("Mauretańska lampa MOULAWLIDAT")).click();
+        driver.findElement(By.xpath("(//button[@type='submit'])[2]")).click();
+        String actualPrice = driver.findElement(By.id("total-price")).getText();
+        driver.findElement(By.xpath("//button[@type='button']")).click();
+        driver.findElement(By.xpath("//button[@type='button']")).click();
+        driver.findElement(By.xpath("//button[@type='button']")).click();
+        String afterPrice = driver.findElement(By.id("total-price")).getText();
+        if (actualPrice.contains(afterPrice)) throw new Exception();
     }
-
 
 }

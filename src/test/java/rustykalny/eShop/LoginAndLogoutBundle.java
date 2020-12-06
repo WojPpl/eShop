@@ -16,11 +16,13 @@ import org.openqa.selenium.opera.OperaDriver;
 
 import java.util.concurrent.TimeUnit;
 
-public class Login {
+public class LoginAndLogoutBundle {
     private WebDriver driver, driverChrome, driverOpera;
     private String className = this.getClass().getSimpleName();
-    private String testDesciption = "Open product page -> click on login-> click on field email -> " +
-            "write email ->go to password -> write password -> click on submit -> click on information ->Test passed.";
+    private String testDesciption = "Open product page -> click on login " +
+            "-> click on field email -> write email ->go to password " +
+            "-> write password -> click on submit -> click on information " +
+            "click on logout ->Test passed.";
 
     ExtentReports extent = new ExtentReports();
     ExtentSparkReporter spark = new ExtentSparkReporter("testReports/" + className + ".html");
@@ -112,7 +114,8 @@ public class Login {
         driver.findElement(By.name("password")).sendKeys("test1");
         driver.findElement(By.id("submit-login")).click();
         driver.findElement(By.xpath("//a[@id='identity-link']/span")).click();
-
+        driver.get("http://rustykalnydev.pl/index.php?controller=identity");
+        driver.findElement(By.cssSelector("path.icofill.icostr2")).click();
     }
 
 

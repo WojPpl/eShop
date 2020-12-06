@@ -4,23 +4,25 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import io.github.bonigarcia.wdm.WebDriverManager;
-
-import java.util.concurrent.TimeUnit;
-
-import org.junit.*;
-
-import static org.junit.Assert.*;
-
-import org.openqa.selenium.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.opera.OperaDriver;
+
+import java.util.concurrent.TimeUnit;
 
 
 public class Searching {
     private WebDriver driver, driverChrome, driverOpera;
     private String className = this.getClass().getSimpleName();
-    private String testDesciption = "test text";
+    private String testDesciption = "Open product page -> click on search field " +
+            "-> write searched product -> click on search button " +
+            "-> find product containing phrase -> Test passed!";
 
     ExtentReports extent = new ExtentReports();
     ExtentSparkReporter spark = new ExtentSparkReporter("testReports/" + className + ".html");
@@ -108,7 +110,8 @@ public class Searching {
         driver.findElement(By.name("s")).clear();
         driver.findElement(By.name("s")).sendKeys("mauretańska lampa mo");
         driver.findElement(By.xpath("//div[@id='search_widget']/form/button/i")).click();
-        driver.findElement(By.xpath("//img[contains(@src,'http://rustykalnydev.pl/img/p/8/2/6/6/8266-large_default.jpg')]")).click();
+        driver.findElement(By.linkText("Mauretańska lampa MOULAWLIDAT")).click();
+        driver.findElement(By.xpath("(//button[@type='submit'])[2]")).click();
     }
 
 }
